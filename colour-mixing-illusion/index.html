@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+  font-family: Helvetica, sans-serif;
+}
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+</style>
+<body>
+Sort by
+<a href="#" class="sort-btn" data-sort="random">random</a> /
+<a href="#" class="sort-btn" data-sort="color">colour</a><br />
+Scale using
+<a href="#" class="width-btn" data-width="full">full</a> /
+<a href="#" class="width-btn" data-width="shrink">shrink</a>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="d3-grid.js"></script>
+<script src="d3-comparator.js"></script>
+<script>
+
+var width = 640,
+    height = 640;
+
+var rect_width = 64;
+
+var grid = d3.layout.grid()
+  .size([640, 640]);
+
+var color_start = d3.scale.linear()
+    .interpolate(d3.interpolateRgb)
+    .domain([0,7])
+    .range(["rgb(0,255,0)", "rgb(255,255,0)"]);
+
+var color_end = d3.scale.linear()
+    .interpolate(d3.interpolateRgb)
+    .domain([0,7])
+    .range(["rgb(0,0,255)", "rgb(255,0,0)"]);
+
+var color = d3.scale.linear()
+  .interpolate(d3.interpolateRgb)
+  .domain([0, 7, 8, 15, 16, 23, 24, 31, 32, 39, 40, 47, 48, 55, 56, 63])
+  .range([color_start(0), color_end(0), color_start(1), color_end(1), color_start(2), color_end(2), color_start(3), color_end(3),
+          color_start(4), color_end(4), color_start(5), color_end(5), color_start(6), color_end(6), color_start(7), color_end(7)]);
+
+var sortBy = {
+  color: d3.comparator()
+    .order(d3.ascending, function(d) { return d.id; }),
+  random: d3.comparator()
+    .order(d3.descending, function(d) { return d.size; })
+    .order(d3.ascending, function(d) { return d.color; })
+    .order(d3.ascending, function(d) { return d.id; })
+};
+
+var data = d3.range(64).map(function(d) {
+  return {
+    id: d,
+    size: 1 + Math.floor(Math.random() * 9),
+    color: d
+  }; 
+});
+
+var svg = d3.select("body").append("svg")
+  .attr({
+    width: width,
+    height: height
+  })
+.append("g")
+  .attr("transform", "translate(64,64)");
+
+d3.selectAll(".sort-btn")
+  .on("click", function(d) {
+    d3.event.preventDefault();
+    data.sort(sortBy[this.dataset.sort]);
+    update();
+  });
+
+d3.selectAll(".width-btn")
+        .on("click", function(d) {
+            d3.event.preventDefault();
+            if(this.dataset.width == 'full') {
+                rect_width = 64;
+            } else
+                rect_width = 56;
+            update();
+        });
+
+data.sort(sortBy["random"]);
+update();
+
+function update() {
+  var node = svg.selectAll(".node")
+    .data(grid(data), function(d) { return d.id; });
+  node.enter().append("rect")
+    .attr("class", "node")
+    .attr("width", 1e-9)
+    .attr("height", 1e-9)
+    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+    .style("fill", function(d) { return color(d.color); });
+  node.transition().duration(1000).delay(function(d, i) { return i * 20; })
+    .attr("width", rect_width)
+    .attr("height", rect_width)
+    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+  node.exit().transition()
+    .attr("width", 1e-9)
+    .attr("width", 1e-9)
+    .remove();
+}
+ 
+</script>

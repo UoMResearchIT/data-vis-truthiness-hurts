@@ -1,0 +1,10 @@
+[
+	{"sizes": [20,20,20,20,20], "labels": ["A","B","C","D","E"]},
+	{"sizes": [22,19,20,21,18], "labels": ["A","B","C","D","E"]},
+	{"sizes": [22,19,20,21,18], "labels": ["A","B","C","D","E"], "start_angle": 110, "end_angle": 470},
+	{"sizes": [22,19,20,21,18], "labels": ["A","B","C","D","E"], "start_angle": 230, "end_angle": 590},
+	{"sizes": [20,21,23,18,18], "labels": ["A","B","C","D","E"]},
+	{"sizes": [21,23,18,18,20], "labels": ["B","C","D","E","A"], "start_angle": 72, "end_angle": 432},
+	{"sizes": [7,23,8,2,2,3,9,6,26,5,9], "labels": ["Q","W","E","R","T","Y","U","I","O","P","A"]},
+	{"sizes": [79,21], "labels": ["Have not","Have"], "title":"The latest thing"}
+]
